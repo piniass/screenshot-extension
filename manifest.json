@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Captura de Pantalla",
+  "version": "1.0.0",
+  "description": "Extensión para hacer capturas de pantalla fácilmente",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "storage",
+    "downloads"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "shot-photo.png",
+      "48": "shot-photo.png",
+      "128": "shot-photo.png"
+    }
+  },
+  "icons": {
+    "16": "shot-photo.png",
+    "48": "shot-photo.png",
+    "128": "shot-photo.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["viewer.html", "viewer.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
+
