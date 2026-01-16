@@ -1,34 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Captura de Pantalla</title>
-    <link rel="stylesheet" href="popup.css">
-</head>
-<body>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>📸 Captura de Pantalla</h1>
-        <div class="button-group">
-            <button id="captureVisible" class="btn btn-primary">
-                📷 Capturar Vista Actual
-            </button>
-            <button id="captureArea" class="btn btn-secondary">
-                ✂️ Seleccionar Área
-            </button>
+      <h1>📸 Captura de Pantalla</h1>
+      <div class="button-group">
+        <button id="captureVisible" class="btn btn-primary">
+          📷 Capturar Vista Actual
+        </button>
+        <button id="captureArea" class="btn btn-secondary">
+          ✂️ Seleccionar Área
+        </button>
+        <button id="cropImage" class="btn btn-secondary">
+          🔲 Recortar con Rectángulo
+        </button>
+      </div>
+      <div id="preview" class="preview-container" style="display: none">
+        <h3>Vista Previa</h3>
+        <canvas id="previewCanvas"></canvas>
+        <div class="preview-actions">
+          <button id="downloadBtn" class="btn btn-success">Descargar</button>
+          <button id="copyBtn" class="btn btn-info">
+            Copiar al Portapapeles
+          </button>
+          <button id="newCaptureBtn" class="btn btn-secondary">
+            Nueva Captura
+          </button>
         </div>
-        <div id="preview" class="preview-container" style="display: none;">
-            <h3>Vista Previa</h3>
-            <canvas id="previewCanvas"></canvas>
-            <div class="preview-actions">
-                <button id="downloadBtn" class="btn btn-success">Descargar</button>
-                <button id="copyBtn" class="btn btn-info">Copiar al Portapapeles</button>
-                <button id="newCaptureBtn" class="btn btn-secondary">Nueva Captura</button>
-            </div>
-        </div>
-        <div id="status" class="status"></div>
+      </div>
+      <div id="status" class="status"></div>
     </div>
     <script src="popup.js"></script>
-</body>
+  </body>
 </html>
-

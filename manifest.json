@@ -3,13 +3,7 @@
   "name": "Captura de Pantalla",
   "version": "1.0.0",
   "description": "Extensión para hacer capturas de pantalla fácilmente",
-  "permissions": [
-    "activeTab",
-    "tabs",
-    "scripting",
-    "storage",
-    "downloads"
-  ],
+  "permissions": ["activeTab", "tabs", "scripting", "storage", "downloads"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -28,9 +22,8 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["viewer.html", "viewer.js"],
+      "resources": ["viewer.html", "viewer.js", "crop.html", "crop.js"],
       "matches": ["<all_urls>"]
     }
   ]
 }
-

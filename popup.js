@@ -9,6 +9,10 @@ document.getElementById('captureArea').addEventListener('click', () => {
     captureArea();
 });
 
+document.getElementById('cropImage').addEventListener('click', () => {
+    openCropEditor();
+});
+
 document.getElementById('downloadBtn').addEventListener('click', downloadCapture);
 document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
 document.getElementById('newCaptureBtn').addEventListener('click', resetCapture);
@@ -233,6 +237,54 @@ function resetCapture() {
     document.getElementById('preview').style.display = 'none';
     currentCanvas = null;
     currentDataUrl = null;
+}
+
+// Abrir editor de recorte con rectángulo ajustable
+function openCropEditor() {
+    // Siempre capturar la pantalla actual del navegador
+    showStatus('Capturando pantalla actual para recortar...', 'info');
+    
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length === 0) {
+            showStatus('No se encontró pestaña activa', 'error');
+            return;
+        }
+        
+        const tabUrl = tabs[0].url;
+        
+        // Verificar que la URL permita capturas
+        if (tabUrl.startsWith('chrome://') || tabUrl.startsWith('chrome-extension://') || 
+            tabUrl.startsWith('edge://') || tabUrl.startsWith('about:')) {
+            showStatus('Esta página no permite capturas. Abre una página web normal.', 'error');
+            return;
+        }
+        
+        chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
+            if (chrome.runtime.lastError) {
+                showStatus('Error: ' + chrome.runtime.lastError.message, 'error');
+                return;
+            }
+            
+            if (dataUrl) {
+                // Generar un ID único para esta captura
+                const captureId = Date.now().toString();
+                
+                // Guardar la nueva captura (sin sobrescribir lastCapture para otras funcionalidades)
+                chrome.storage.local.set({
+                    ['capture_' + captureId]: {
+                        dataUrl: dataUrl,
+                        timestamp: Date.now()
+                    }
+                }, () => {
+                    // Abrir el editor de recorte con la nueva captura
+                    const cropUrl = chrome.runtime.getURL('crop.html') + '?id=' + captureId;
+                    chrome.tabs.create({ url: cropUrl });
+                });
+            } else {
+                showStatus('Error al capturar la pantalla', 'error');
+            }
+        });
+    });
 }
 
 // Verificar si hay una captura guardada al cargar el popup
