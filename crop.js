@@ -357,20 +357,26 @@ function performCrop() {
         const cropWidth = boxRect.width * scaleX;
         const cropHeight = boxRect.height * scaleY;
         
-        // Crear canvas para recortar
+        // Crear canvas para recortar con máxima calidad
         const canvas = document.createElement('canvas');
+        // Usar la resolución completa de la imagen original para máxima calidad
         canvas.width = cropWidth;
         canvas.height = cropHeight;
         const ctx = canvas.getContext('2d');
         
+        // Configurar renderizado de alta calidad
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
+        // Dibujar la porción recortada
         ctx.drawImage(
             img,
             cropX, cropY, cropWidth, cropHeight,
             0, 0, cropWidth, cropHeight
         );
         
-        // Convertir a data URL
-        const croppedDataUrl = canvas.toDataURL('image/png');
+        // Convertir a data URL con máxima calidad (PNG sin compresión)
+        const croppedDataUrl = canvas.toDataURL('image/png', 1.0);
         
         // Guardar y abrir en nueva pestaña
         const captureId = Date.now().toString();

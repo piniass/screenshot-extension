@@ -37,7 +37,10 @@ function captureVisible() {
             return;
         }
         
-        chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
+        chrome.tabs.captureVisibleTab(null, { 
+            format: 'png',
+            quality: 100 
+        }, (dataUrl) => {
             if (chrome.runtime.lastError) {
                 showStatus('Error: ' + chrome.runtime.lastError.message, 'error');
                 return;
@@ -141,6 +144,11 @@ function displayCapture(dataUrl) {
     img.onload = () => {
         canvas.width = img.width;
         canvas.height = img.height;
+        
+        // Configurar renderizado de alta calidad
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
         ctx.drawImage(img, 0, 0);
         currentCanvas = canvas;
         document.getElementById('preview').style.display = 'block';
@@ -205,7 +213,7 @@ function downloadCapture() {
         
         // Método 2: Si solo tenemos el canvas, convertir a dataUrl primero
         if (currentCanvas) {
-            const dataUrl = currentCanvas.toDataURL('image/png');
+            const dataUrl = currentCanvas.toDataURL('image/png', 1.0);
             downloadFromDataUrl(dataUrl, filename);
         }
     } catch (error) {
@@ -226,7 +234,7 @@ async function copyToClipboard() {
                 new ClipboardItem({ 'image/png': blob })
             ]);
             showStatus('Imagen copiada al portapapeles', 'success');
-        });
+        }, 'image/png', 1.0);
     } catch (error) {
         console.error('Error al copiar:', error);
         showStatus('Error al copiar: ' + error.message, 'error');
@@ -259,7 +267,10 @@ function openCropEditor() {
             return;
         }
         
-        chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
+        chrome.tabs.captureVisibleTab(null, { 
+            format: 'png',
+            quality: 100 
+        }, (dataUrl) => {
             if (chrome.runtime.lastError) {
                 showStatus('Error: ' + chrome.runtime.lastError.message, 'error');
                 return;

@@ -33,7 +33,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Capturar la pestaña visible actual
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs.length > 0) {
-                chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
+                chrome.tabs.captureVisibleTab(null, { 
+                    format: 'png',
+                    quality: 100 
+                }, (dataUrl) => {
                     if (chrome.runtime.lastError) {
                         sendResponse({ success: false, error: chrome.runtime.lastError.message });
                     } else {
@@ -51,7 +54,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Capturar la pestaña y enviar los datos al content script para recortar
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             if (tabs.length > 0) {
-                chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
+                chrome.tabs.captureVisibleTab(null, { 
+                    format: 'png',
+                    quality: 100 
+                }, (dataUrl) => {
                     if (chrome.runtime.lastError) {
                         sendResponse({ success: false, error: chrome.runtime.lastError.message });
                     } else {

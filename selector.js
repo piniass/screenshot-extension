@@ -203,22 +203,24 @@ function captureSelectedArea(rect) {
     const viewportX = rect.left;
     const viewportY = rect.top;
     
-    // Limpiar la UI
+    // Limpiar la UI PRIMERO para que el overlay desaparezca
     cleanup();
     
-    // Mostrar indicador de carga
-    console.log('Capturando área seleccionada:', { viewportX, viewportY, width, height });
-    
-    // Enviar mensaje al background para capturar
-    chrome.runtime.sendMessage({
-        action: 'captureSelectedArea',
-        viewportX: viewportX,
-        viewportY: viewportY,
-        width: width,
-        height: height,
-        scrollX: scrollX,
-        scrollY: scrollY
-    }, (response) => {
+    // Esperar un momento para que el DOM se actualice y el overlay desaparezca
+    setTimeout(() => {
+        // Mostrar indicador de carga
+        console.log('Capturando área seleccionada:', { viewportX, viewportY, width, height });
+        
+        // Enviar mensaje al background para capturar
+        chrome.runtime.sendMessage({
+            action: 'captureSelectedArea',
+            viewportX: viewportX,
+            viewportY: viewportY,
+            width: width,
+            height: height,
+            scrollX: scrollX,
+            scrollY: scrollY
+        }, (response) => {
         if (chrome.runtime.lastError) {
             console.error('Error al capturar:', chrome.runtime.lastError.message);
             chrome.runtime.sendMessage({
@@ -243,12 +245,34 @@ function captureSelectedArea(rect) {
                 error: errorMsg
             });
         }
-    });
+        });
+    }, 100); // Esperar 100ms para que el overlay desaparezca completamente
 }
 
 function cleanup() {
     isSelecting = false;
     
+    // Ocultar elementos primero para asegurar que no aparezcan en la captura
+    if (overlay) {
+        overlay.style.display = 'none';
+        overlay.style.visibility = 'hidden';
+    }
+    if (selectionBox) {
+        selectionBox.style.display = 'none';
+        selectionBox.style.visibility = 'hidden';
+    }
+    const instructions = document.getElementById('screenshot-instructions');
+    if (instructions) {
+        instructions.style.display = 'none';
+        instructions.style.visibility = 'hidden';
+    }
+    
+    // Forzar un reflow para asegurar que los cambios se apliquen
+    if (overlay) {
+        overlay.offsetHeight; // Trigger reflow
+    }
+    
+    // Ahora remover del DOM
     if (overlay && overlay.parentNode) {
         const originalOverflow = overlay.dataset.originalOverflow || '';
         document.body.style.overflow = originalOverflow;
@@ -257,7 +281,6 @@ function cleanup() {
     if (selectionBox && selectionBox.parentNode) {
         selectionBox.parentNode.removeChild(selectionBox);
     }
-    const instructions = document.getElementById('screenshot-instructions');
     if (instructions && instructions.parentNode) {
         instructions.parentNode.removeChild(instructions);
     }
@@ -287,12 +310,6 @@ function cropImage(dataUrl, viewportX, viewportY, width, height) {
                     scale: scale
                 });
                 
-                // Crear canvas para la imagen recortada
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                
                 // Ajustar coordenadas según el factor de escala
                 // La captura tiene el tamaño del viewport multiplicado por el scale
                 const scaledX = viewportX * scale;
@@ -300,33 +317,47 @@ function cropImage(dataUrl, viewportX, viewportY, width, height) {
                 const scaledWidth = width * scale;
                 const scaledHeight = height * scale;
                 
+                // Usar las dimensiones escaladas para mantener máxima resolución
+                let finalWidth = scaledWidth;
+                let finalHeight = scaledHeight;
+                let sourceX = scaledX;
+                let sourceY = scaledY;
+                let sourceWidth = scaledWidth;
+                let sourceHeight = scaledHeight;
+                
                 // Verificar que las coordenadas estén dentro de los límites de la imagen
                 if (scaledX < 0 || scaledY < 0 || 
                     scaledX + scaledWidth > img.width || 
                     scaledY + scaledHeight > img.height) {
                     console.warn('Coordenadas fuera de límites, ajustando...');
                     // Ajustar a los límites
-                    const adjustedX = Math.max(0, Math.min(scaledX, img.width - scaledWidth));
-                    const adjustedY = Math.max(0, Math.min(scaledY, img.height - scaledHeight));
-                    const adjustedWidth = Math.min(scaledWidth, img.width - adjustedX);
-                    const adjustedHeight = Math.min(scaledHeight, img.height - adjustedY);
-                    
-                    ctx.drawImage(
-                        img,
-                        adjustedX, adjustedY, adjustedWidth, adjustedHeight,
-                        0, 0, width, height
-                    );
-                } else {
-                    // Dibujar la porción recortada
-                    ctx.drawImage(
-                        img,
-                        scaledX, scaledY, scaledWidth, scaledHeight,  // Source: área a recortar de la imagen completa
-                        0, 0, width, height  // Destination: tamaño final del canvas
-                    );
+                    sourceX = Math.max(0, Math.min(scaledX, img.width - scaledWidth));
+                    sourceY = Math.max(0, Math.min(scaledY, img.height - scaledHeight));
+                    sourceWidth = Math.min(scaledWidth, img.width - sourceX);
+                    sourceHeight = Math.min(scaledHeight, img.height - sourceY);
+                    finalWidth = sourceWidth;
+                    finalHeight = sourceHeight;
                 }
                 
-                // Convertir a data URL
-                const croppedDataUrl = canvas.toDataURL('image/png');
+                // Crear canvas para la imagen recortada con máxima calidad (resolución completa)
+                const canvas = document.createElement('canvas');
+                canvas.width = finalWidth;
+                canvas.height = finalHeight;
+                const ctx = canvas.getContext('2d');
+                
+                // Configurar renderizado de alta calidad
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                // Dibujar la porción recortada manteniendo la resolución completa
+                ctx.drawImage(
+                    img,
+                    sourceX, sourceY, sourceWidth, sourceHeight,  // Source: área a recortar de la imagen completa
+                    0, 0, finalWidth, finalHeight  // Destination: tamaño final del canvas (misma resolución)
+                );
+                
+                // Convertir a data URL con máxima calidad
+                const croppedDataUrl = canvas.toDataURL('image/png', 1.0);
                 console.log('Recorte completado exitosamente');
                 resolve(croppedDataUrl);
             } catch (error) {

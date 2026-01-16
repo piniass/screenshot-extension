@@ -1,148 +1,152 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Captura de Pantalla</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-            max-width: 95%;
-            width: 100%;
-            max-width: 1200px;
-        }
-        
-        h1 {
-            color: #667eea;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 28px;
-        }
-        
-        .image-container {
-            text-align: center;
-            margin-bottom: 25px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            overflow: auto;
-            max-height: 70vh;
-        }
-        
-        #captureImage {
-            max-width: 100%;
-            height: auto;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .button-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn-download {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-        }
-        
-        .btn-close {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .status {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 14px;
-            display: none;
-        }
-        
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block;
-        }
-        
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #667eea;
-            font-size: 18px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>📸 Captura de Pantalla</h1>
-        <div id="loading" class="loading">Cargando imagen...</div>
-        <div id="content" style="display: none;">
-            <div class="image-container">
-                <img id="captureImage" alt="Captura de pantalla">
-            </div>
-            <div class="button-container">
-                <button id="downloadBtn" class="btn btn-download">💾 Descargar Imagen</button>
-                <button id="closeBtn" class="btn btn-close">❌ Cerrar</button>
-            </div>
-            <div id="status" class="status"></div>
-        </div>
-    </div>
-    
-    <script src="viewer.js"></script>
-</body>
-</html>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
+          sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: #1e1e1e;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        padding: 30px;
+        max-width: 95%;
+        width: 100%;
+        max-width: 1200px;
+        border: 1px solid #333;
+      }
+
+      h1 {
+        color: #4caf50;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 28px;
+      }
+
+      .image-container {
+        text-align: center;
+        margin-bottom: 25px;
+        background: #2a2a2a;
+        border-radius: 8px;
+        padding: 20px;
+        overflow: auto;
+        max-height: 70vh;
+        border: 1px solid #404040;
+      }
+
+      #captureImage {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      .button-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn-download {
+        background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+        color: white;
+      }
+
+      .btn-close {
+        background: #424242;
+        color: #e0e0e0;
+      }
+
+      .status {
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 6px;
+        text-align: center;
+        font-size: 14px;
+        display: none;
+      }
+
+      .status.success {
+        background: #1b5e20;
+        color: #81c784;
+        border: 1px solid #2e7d32;
+        display: block;
+      }
+
+      .status.error {
+        background: #b71c1c;
+        color: #ef5350;
+        border: 1px solid #c62828;
+        display: block;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #4caf50;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📸 Captura de Pantalla</h1>
+      <div id="loading" class="loading">Cargando imagen...</div>
+      <div id="content" style="display: none">
+        <div class="image-container">
+          <img id="captureImage" alt="Captura de pantalla" />
+        </div>
+        <div class="button-container">
+          <button id="downloadBtn" class="btn btn-download">
+            💾 Descargar Imagen
+          </button>
+          <button id="closeBtn" class="btn btn-close">❌ Cerrar</button>
+        </div>
+        <div id="status" class="status"></div>
+      </div>
+    </div>
+
+    <script src="viewer.js"></script>
+  </body>
+</html>
