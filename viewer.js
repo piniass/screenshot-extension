@@ -121,3 +121,4 @@ document.getElementById('closeBtn').addEventListener('click', () => {
 // Cargar la imagen al iniciar
 window.addEventListener('DOMContentLoaded', loadImage);
 
+
